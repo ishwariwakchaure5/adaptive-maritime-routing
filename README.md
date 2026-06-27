@@ -1,73 +1,51 @@
-# React + TypeScript + Vite
+# Adaptive Maritime Routing — A* Pathfinding Through Dynamic Ocean Currents
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive simulation of A* pathfinding for ship navigation through dynamic ocean current vector fields, with moving obstacles and real-time route visualization.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Most A* demonstrations route around static obstacles on a fixed grid. This project extends that model with a continuously shifting environment: a **vector field representing ocean currents** displaces a moving agent (a ship) from its planned path, while **dynamic obstacles** move during simulation. The system must adapt its routing in real time rather than computing a single static path.
 
-## React Compiler
+The core pathfinding logic is implemented twice — once in TypeScript for the interactive browser simulation, and once in C++ as a standalone, CMake-built implementation of the same algorithm.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- A* pathfinding with cost-aware routing
+- Ocean current vector fields that influence agent movement
+- Dynamic, moving obstacles requiring real-time re-routing
+- Spatial partitioning for efficient collision and lookup performance
+- Route comparison logic for evaluating different navigation strategies
+- Canvas-based real-time rendering, with overlays for current and vector field visualization
+- An analytics panel for inspecting simulation behavior
+- Scene persistence for saving and reloading simulation setups
+- A parallel C++ implementation of the routing engine
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Frontend:** React 19, TypeScript, Vite, Tailwind CSS, HTML Canvas
+**Simulation Engine:** Custom C++ implementation (CMake), in addition to the TypeScript engine
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Running Locally
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**Frontend:**
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**C++ Engine:**
+```bash
+cd server
+cmake -B build
+cmake --build build
 ```
+
+## Motivation
+
+Built as a Design and Analysis of Algorithms course project, extending a classical A* implementation to operate under continuously changing environmental forces — closer to real-world routing problems like maritime navigation or drone flight planning than a static grid search.
+
+## Future Work
+
+- Direct integration between the TypeScript and C++ engines for live performance comparison
+- Benchmarking pathfinding efficiency under varying current strength and obstacle density
+- Expanded edge-case handling for high-current or densely obstructed scenes
